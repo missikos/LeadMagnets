@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What's Quietly Killing Your Sale Price?</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #0B1A2B;
+    --bg-card: #112240;
+    --bg-card-hover: #1A2F52;
+    --gold: #D4A853;
+    --gold-light: #E8C97A;
+    --gold-dim: rgba(212, 168, 83, 0.15);
+    --green: #2ECC71;
+    --green-dim: rgba(46, 204, 113, 0.2);
+    --red: #E74C3C;
+    --red-dim: rgba(231, 76, 60, 0.2);
+    --amber: #F39C12;
+    --text-primary: #F0EDE6;
+    --text-secondary: #8B9BB4;
+    --text-muted: #5A6A82;
+    --border: rgba(212, 168, 83, 0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Subtle grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .container {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 24px 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* INTRO SCREEN */
+  .intro {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    animation: fadeUp 0.8s ease-out;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .intro-badge {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    opacity: 0.8;
+  }
+
+  .intro h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    line-height: 1.15;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+  }
+
+  .intro h1 .gold { color: var(--gold); }
+
+  .intro p {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 460px;
+    margin-bottom: 36px;
+  }
+
+  .intro-profit {
+    width: 100%;
+    max-width: 380px;
+    margin-bottom: 32px;
+  }
+
+  .intro-profit label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  .profit-input-wrap {
+    position: relative;
+  }
+
+  .profit-input-wrap .currency {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gold);
+  }
+
+  .profit-input {
+    width: 100%;
+    padding: 14px 16px 14px 34px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .profit-input:focus {
+    border-color: var(--gold);
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 36px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--bg-deep);
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(212, 168, 83, 0.3);
+  }
+
+  .btn-primary:active { transform: translateY(0); }
+
+  /* QUESTION SCREEN */
+  .question-screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    animation: fadeUp 0.5s ease-out;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 3px;
+    background: var(--bg-card);
+    border-radius: 3px;
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+
+  .q-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .q-category {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.7;
+  }
+
+  .q-count {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .q-text {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(20px, 4.5vw, 26px);
+    line-height: 1.35;
+    color: var(--text-primary);
+    margin-bottom: 28px;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+  }
+
+  .option-btn {
+    width: 100%;
+    padding: 16px 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.25s;
+    line-height: 1.4;
+  }
+
+  .option-btn:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--gold);
+    transform: translateX(4px);
+  }
+
+  .option-btn.selected {
+    border-color: var(--gold);
+    background: var(--gold-dim);
+  }
+
+  .option-score {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+
+  /* RESULTS SCREEN */
+  .results-screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    animation: fadeUp 0.6s ease-out;
+  }
+
+  .results-header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .results-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(24px, 5vw, 32px);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  .results-header p {
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  /* BRICK STACK */
+  .brick-visual {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 28px;
+    margin-bottom: 32px;
+    padding: 28px 0;
+  }
+
+  .brick-column {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 0;
+    min-width: 120px;
+  }
+
+  .brick-col-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .brick {
+    width: 120px;
+    height: 28px;
+    border-radius: 4px;
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: brickIn 0.3s ease-out forwards;
+  }
+
+  .brick.green {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    color: rgba(255,255,255,0.85);
+    box-shadow: 0 2px 8px rgba(46, 204, 113, 0.25);
+  }
+
+  .brick.red {
+    background: linear-gradient(135deg, #c0392b, #e74c3c);
+    color: rgba(255,255,255,0.75);
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.25);
+  }
+
+  .brick.amber {
+    background: linear-gradient(135deg, #d68910, #f39c12);
+    color: rgba(255,255,255,0.8);
+    box-shadow: 0 2px 8px rgba(243, 156, 18, 0.25);
+  }
+
+  @keyframes brickIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Dollar callout */
+  .dollar-callout {
+    text-align: center;
+    padding: 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 28px;
+  }
+
+  .dollar-callout .current {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: var(--green);
+    margin-bottom: 4px;
+  }
+
+  .dollar-callout .potential {
+    font-family: 'DM Serif Display', serif;
+    font-size: 36px;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+
+  .dollar-callout .gap-label {
+    font-size: 14px;
+    color: var(--red);
+    font-weight: 600;
+  }
+
+  .dollar-callout .gap-amount {
+    font-family: 'DM Serif Display', serif;
+    font-size: 40px;
+    color: var(--red);
+    margin-bottom: 4px;
+    text-align: center;
+  }
+
+  .dollar-callout .gap-sub {
+    font-size: 14px;
+    color: var(--red);
+    font-weight: 600;
+    text-align: center;
+    opacity: 0.85;
+  }
+
+  .dollar-callout .label {
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+
+  .dollar-row {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-bottom: 12px;
+  }
+
+  .dollar-item { text-align: center; }
+
+  .divider-arrow {
+    font-size: 24px;
+    color: var(--text-muted);
+    align-self: center;
+  }
+
+  /* Breakdown */
+  .breakdown {
+    margin-bottom: 28px;
+  }
+
+  .breakdown-title {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+
+  .breakdown-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--bg-card);
+    border-radius: 8px;
+    margin-bottom: 6px;
+    border-left: 3px solid transparent;
+  }
+
+  .breakdown-row.weak { border-left-color: var(--red); }
+  .breakdown-row.partial { border-left-color: var(--amber); }
+  .breakdown-row.strong { border-left-color: var(--green); }
+
+  .breakdown-row .area-name {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .breakdown-row .area-score {
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .breakdown-row.weak .area-score { color: var(--red); }
+  .breakdown-row.partial .area-score { color: var(--amber); }
+  .breakdown-row.strong .area-score { color: var(--green); }
+
+  .weakest-callout {
+    padding: 18px 20px;
+    background: var(--red-dim);
+    border: 1px solid rgba(231, 76, 60, 0.25);
+    border-radius: 10px;
+    margin-bottom: 28px;
+  }
+
+  .weakest-callout .callout-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 6px;
+  }
+
+  .weakest-callout .callout-text {
+    font-size: 15px;
+    color: var(--text-primary);
+    line-height: 1.5;
+  }
+
+  .cta-section {
+    text-align: center;
+    padding: 24px;
+    background: var(--gold-dim);
+    border: 1px solid rgba(212, 168, 83, 0.2);
+    border-radius: 12px;
+    margin-bottom: 16px;
+  }
+
+  .cta-section p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  .cta-section .cta-brand {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 12px;
+  }
+
+  .btn-restart {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .btn-restart:hover {
+    color: var(--text-secondary);
+    border-color: var(--text-muted);
+  }
+
+  .hidden { display: none !important; }
+
+  @media (max-width: 480px) {
+    .container { padding: 16px; }
+    .brick { width: 100px; height: 24px; font-size: 8px; }
+    .brick-column { min-width: 100px; }
+    .dollar-row { gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- INTRO -->
+  <div class="intro" id="introScreen">
+    <div class="intro-badge">Free Assessment</div>
+    <h1>What's Quietly <span class="gold">Killing Your Sale Price?</span></h1>
+    <p>12 quick questions. 2 minutes. See your estimated sale multiple and how much value you could be leaving on the table.</p>
+
+    <div class="intro-profit">
+      <label>Your approximate annual net profit</label>
+      <div class="profit-input-wrap">
+        <span class="currency">$</span>
+        <input type="text" class="profit-input" id="profitInput" placeholder="e.g. 200,000" inputmode="numeric">
+      </div>
+    </div>
+
+    <button class="btn-primary" id="startBtn">
+      See Your Multiple
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+
+  <!-- QUESTIONS -->
+  <div class="question-screen hidden" id="questionScreen">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+    <div class="q-meta">
+      <span class="q-category" id="qCategory"></span>
+      <span class="q-count" id="qCount"></span>
+    </div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results-screen hidden" id="resultsScreen"></div>
+
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    category: "First Impressions",
+    text: "Could a stranger find your business online and immediately understand what makes you different from competitors?",
+    options: [
+      { label: "Yes. Our positioning is clear, differentiated, and visible everywhere.", score: 2 },
+      { label: "Partially. We have a web presence but it's generic or outdated.", score: 1 },
+      { label: "Not really. We rely on word of mouth. Our online presence is minimal.", score: 0 }
+    ]
+  },
+  {
+    category: "First Impressions",
+    text: "When did you last update your website, Google Business listing, and social profiles to reflect your current business?",
+    options: [
+      { label: "Within the last 6 months. Everything is current.", score: 2 },
+      { label: "It's been a year or more. Some info is probably wrong.", score: 1 },
+      { label: "I honestly can't remember. Some of these might not even exist.", score: 0 }
+    ]
+  },
+  {
+    category: "Momentum & Income",
+    text: "Over the last 12 months, which direction is your revenue trending?",
+    options: [
+      { label: "Growing. We're actively building momentum.", score: 2 },
+      { label: "Flat. Stable but not really moving.", score: 1 },
+      { label: "Declining. I've been winding down or coasting.", score: 0 }
+    ]
+  },
+  {
+    category: "Momentum & Income",
+    text: "Are you still actively investing in marketing and customer acquisition?",
+    options: [
+      { label: "Yes. Marketing spend is maintained or increasing.", score: 2 },
+      { label: "Somewhat. I'm doing the minimum to keep things going.", score: 1 },
+      { label: "No. I've pulled back. Why market if I'm selling?", score: 0 }
+    ]
+  },
+  {
+    category: "Financial Records",
+    text: "If a buyer asked for 3 years of clean, up-to-date financial statements this week, could you hand them over?",
+    options: [
+      { label: "Yes. My accountant keeps everything current and audit-ready.", score: 2 },
+      { label: "Mostly. I'd need a few weeks to tidy things up.", score: 1 },
+      { label: "No. My books are messy, behind, or incomplete.", score: 0 }
+    ]
+  },
+  {
+    category: "Financial Records",
+    text: "Do you clearly know your actual net profit, separate from your revenue and personal expenses run through the business?",
+    options: [
+      { label: "Yes. I have clear P&L with owner adjustments documented.", score: 2 },
+      { label: "Roughly. I know the ballpark but it's not formally separated.", score: 1 },
+      { label: "Not really. Personal and business finances are tangled together.", score: 0 }
+    ]
+  },
+  {
+    category: "Business Valuation",
+    text: "Have you had a professional business valuation done in the last 2 years?",
+    options: [
+      { label: "Yes. I have a current, credible valuation.", score: 2 },
+      { label: "I've done some rough research but nothing formal.", score: 1 },
+      { label: "No. I'm guessing what it's worth.", score: 0 }
+    ]
+  },
+  {
+    category: "Business Valuation",
+    text: "Do you know what earnings multiple businesses like yours typically sell for in the current market?",
+    options: [
+      { label: "Yes. I've researched comparable sales and industry benchmarks.", score: 2 },
+      { label: "I've heard some numbers but I'm not confident in them.", score: 1 },
+      { label: "No idea. I wouldn't know where to start.", score: 0 }
+    ]
+  },
+  {
+    category: "Exit Strategy",
+    text: "Have you chosen a specific exit path for your business?",
+    options: [
+      { label: "Yes. I have a defined plan: broker, private sale, succession, etc.", score: 2 },
+      { label: "I'm considering options but haven't committed to one.", score: 1 },
+      { label: "No. I'm figuring it out as I go.", score: 0 }
+    ]
+  },
+  {
+    category: "Exit Strategy",
+    text: "Do you have a timeline with milestones, or is selling \"someday\" without a date?",
+    options: [
+      { label: "I have a specific target date and steps mapped out.", score: 2 },
+      { label: "I have a rough timeframe but no concrete milestones.", score: 1 },
+      { label: "It's vague. Someday, when the time feels right.", score: 0 }
+    ]
+  },
+  {
+    category: "Mindset & Support",
+    text: "Do you have a trusted advisor, mentor, or broker guiding you through the sale process?",
+    options: [
+      { label: "Yes. I have professional support I trust.", score: 2 },
+      { label: "I have people I could ask but haven't engaged them yet.", score: 1 },
+      { label: "No. I'm doing this solo.", score: 0 }
+    ]
+  },
+  {
+    category: "Mindset & Support",
+    text: "How confident do you feel about negotiating the sale and getting what your business is actually worth?",
+    options: [
+      { label: "Confident. I know my numbers and I'm prepared.", score: 2 },
+      { label: "Somewhat. I'd feel better with more preparation.", score: 1 },
+      { label: "Not confident at all. I'm worried I'll undersell.", score: 0 }
+    ]
+  }
+];
+
+const CATEGORIES = [
+  "First Impressions",
+  "Momentum & Income",
+  "Financial Records",
+  "Business Valuation",
+  "Exit Strategy",
+  "Mindset & Support"
+];
+
+const CATEGORY_INSIGHTS = {
+  "First Impressions": "Buyers judge in seconds. A weak online presence or unclear positioning signals risk and immediately lowers perceived value. This is often the cheapest gap to close for the biggest return.",
+  "Momentum & Income": "A business trending down at sale time gets discounted hard. Buyers pay premiums for businesses with forward momentum. Keeping the engine running is one of the highest-leverage moves before listing.",
+  "Financial Records": "Messy books don't just slow deals down. They kill trust. Buyers and brokers need to see clean numbers to justify the price. Every month of unclear records erodes your negotiating position.",
+  "Business Valuation": "If you don't know what your business is worth, you can't negotiate from strength. Without benchmarks, you risk either pricing yourself out or leaving serious money behind.",
+  "Exit Strategy": "Winging it costs money. Every exit path has different tax implications, timelines, and buyer pools. Choosing a path late means reacting instead of optimising.",
+  "Mindset & Support": "Selling alone is exhausting and expensive. Stress leads to rushed decisions. Having the right support isn't a luxury. It's insurance against settling for less than your business is worth."
+};
+
+let currentQ = 0;
+let answers = [];
+let annualProfit = 200000;
+
+// Format currency
+function formatCurrency(num) {
+  return '$' + num.toLocaleString('en-AU', { maximumFractionDigits: 0 });
+}
+
+// Format input
+const profitInput = document.getElementById('profitInput');
+profitInput.addEventListener('input', function() {
+  let raw = this.value.replace(/[^0-9]/g, '');
+  if (raw) {
+    this.value = parseInt(raw).toLocaleString();
+  } else {
+    this.value = '';
+  }
+});
+
+// Start
+document.getElementById('startBtn').addEventListener('click', function() {
+  let raw = profitInput.value.replace(/[^0-9]/g, '');
+  annualProfit = raw ? parseInt(raw) : 200000;
+  if (annualProfit < 1000) annualProfit = 200000;
+
+  document.getElementById('introScreen').classList.add('hidden');
+  document.getElementById('questionScreen').classList.remove('hidden');
+  showQuestion(0);
+});
+
+function showQuestion(idx) {
+  currentQ = idx;
+  const q = QUESTIONS[idx];
+  const screen = document.getElementById('questionScreen');
+  screen.style.animation = 'none';
+  screen.offsetHeight;
+  screen.style.animation = 'fadeUp 0.4s ease-out';
+
+  document.getElementById('progressFill').style.width = ((idx / QUESTIONS.length) * 100) + '%';
+  document.getElementById('qCategory').textContent = q.category;
+  document.getElementById('qCount').textContent = (idx + 1) + ' of ' + QUESTIONS.length;
+  document.getElementById('qText').textContent = q.text;
+
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = opt.label;
+    btn.addEventListener('click', () => {
+      answers[idx] = { category: q.category, score: opt.score };
+      if (idx < QUESTIONS.length - 1) {
+        setTimeout(() => showQuestion(idx + 1), 200);
+      } else {
+        setTimeout(showResults, 300);
+      }
+    });
+    wrap.appendChild(btn);
+  });
+}
+
+function showResults() {
+  document.getElementById('questionScreen').classList.add('hidden');
+  const screen = document.getElementById('resultsScreen');
+  screen.classList.remove('hidden');
+
+  // Calculate scores per category
+  const catScores = {};
+  CATEGORIES.forEach(c => catScores[c] = 0);
+  answers.forEach(a => catScores[a.category] += a.score);
+
+  const maxPerCat = 4; // 2 questions * 2 max score
+  const totalScore = Object.values(catScores).reduce((a, b) => a + b, 0);
+  const maxTotal = 24;
+
+  // Map to multiples: max multiple = 4x, min = 1.5x
+  const scoreRatio = totalScore / maxTotal;
+  const currentMultiple = 1.5 + (scoreRatio * 2.5);
+  const potentialMultiple = 4.0;
+
+  const currentValue = annualProfit * currentMultiple;
+  const potentialValue = annualProfit * potentialMultiple;
+  const gapValue = potentialValue - currentValue;
+
+  // Find weakest area
+  let weakest = CATEGORIES[0];
+  let weakestScore = catScores[CATEGORIES[0]];
+  CATEGORIES.forEach(c => {
+    if (catScores[c] < weakestScore) {
+      weakestScore = catScores[c];
+      weakest = c;
+    }
+  });
+
+  // Build bricks data: each category gets a green/red/amber brick
+  const bricks = CATEGORIES.map(c => {
+    const s = catScores[c];
+    const pct = s / maxPerCat;
+    let color = 'red';
+    if (pct >= 0.75) color = 'green';
+    else if (pct >= 0.375) color = 'amber';
+    return { category: c, score: s, max: maxPerCat, color };
+  });
+
+  // Sort: green at bottom, red at top for "Your Position" column
+  const greenBricks = bricks.filter(b => b.color === 'green');
+  const amberBricks = bricks.filter(b => b.color === 'amber');
+  const redBricks = bricks.filter(b => b.color === 'red');
+
+  // Short labels
+  const shortLabel = (cat) => {
+    const map = {
+      "First Impressions": "Impressions",
+      "Momentum & Income": "Momentum",
+      "Financial Records": "Financials",
+      "Business Valuation": "Valuation",
+      "Exit Strategy": "Exit Plan",
+      "Mindset & Support": "Support"
+    };
+    return map[cat] || cat;
+  };
+
+  let html = '';
+
+  // Header
+  html += `
+    <div class="results-header">
+      <h2>Your Sale Price Reality Check</h2>
+      <p>Here's what your answers reveal about the value you're capturing vs. what you could be getting.</p>
+    </div>
+  `;
+
+  // Brick visual: single column showing all 6 bricks stacked
+  html += `<div class="brick-visual">`;
+
+  // "Your Position" column: all bricks, colored by score
+  html += `<div class="brick-column"><div class="brick-col-label">Your Position</div>`;
+  // Green first (bottom), then amber, then red (top)
+  [...greenBricks, ...amberBricks, ...redBricks].forEach((b, i) => {
+    html += `<div class="brick ${b.color}" style="animation-delay: ${i * 0.1}s">${shortLabel(b.category)}</div>`;
+  });
+  html += `</div>`;
+
+  // "Full Potential" column: all green
+  html += `<div class="brick-column"><div class="brick-col-label">Full Potential</div>`;
+  CATEGORIES.forEach((c, i) => {
+    html += `<div class="brick green" style="animation-delay: ${(i * 0.1) + 0.6}s">${shortLabel(c)}</div>`;
+  });
+  html += `</div>`;
+
+  html += `</div>`;
+
+  // Dollar callout
+  html += `
+    <div class="dollar-callout">
+      <div class="dollar-row">
+        <div class="dollar-item">
+          <div class="label">You're positioned for</div>
+          <div class="current">${formatCurrency(currentValue)}</div>
+          <div class="label">${currentMultiple.toFixed(1)}x multiple</div>
+        </div>
+        <div class="divider-arrow">&rarr;</div>
+        <div class="dollar-item">
+          <div class="label">You could be getting</div>
+          <div class="potential">${formatCurrency(potentialValue)}</div>
+          <div class="label">${potentialMultiple.toFixed(1)}x multiple</div>
+        </div>
+      </div>
+      <div class="gap-amount">${formatCurrency(gapValue)}</div>
+      <div class="gap-sub">potentially left on the table</div>
+    </div>
+  `;
+
+  // Breakdown rows
+  html += `<div class="breakdown"><div class="breakdown-title">Your 6 areas</div>`;
+  CATEGORIES.forEach(c => {
+    const s = catScores[c];
+    const pct = s / maxPerCat;
+    let cls = 'weak';
+    let label = 'Needs work';
+    if (pct >= 0.75) { cls = 'strong'; label = 'Strong'; }
+    else if (pct >= 0.375) { cls = 'partial'; label = 'Partial'; }
+    html += `
+      <div class="breakdown-row ${cls}">
+        <span class="area-name">${c}</span>
+        <span class="area-score">${label}</span>
+      </div>
+    `;
+  });
+  html += `</div>`;
+
+  // Weakest callout
+  html += `
+    <div class="weakest-callout">
+      <div class="callout-label">Your biggest value leak</div>
+      <div class="callout-text"><strong>${weakest}</strong>: ${CATEGORY_INSIGHTS[weakest]}</div>
+    </div>
+  `;
+
+  // CTA
+  html += `
+    <div class="cta-section">
+      <p>Most business owners close these gaps faster than they expect, once they know where to focus. A short conversation can show you how.</p>
+      <button class="btn-primary" onclick="window.open('https://protolinkmarketing.com/contact-us/', '_blank')">
+        Talk to ProtoLink
+      </button>
+      <div class="cta-brand">ProtoLink Marketing & Consulting<br>Experts in Mindset, Messages and Brand Marketing</div>
+    </div>
+    <button class="btn-restart" onclick="location.reload()">Take the assessment again</button>
+  `;
+
+  screen.innerHTML = html;
+}
+</script>
+
+</body>
+</html>
